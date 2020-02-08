@@ -1,0 +1,77 @@
+1、maven的作用：
+	1、依赖的jar库管理
+	2、在使用开源jar时可以看到源码
+	3、使用mvn命令完成编译打包等操作。
+
+2、仓库分为中央仓库、局域网的私有仓库和电脑本地仓库(默认在用户目录下的.m2文件夹)。
+
+3、maven操作的实例:
+
+	1、VIPLOGIN接口项目：
+		1、new一个maven项目，选择workspace的时候根据自己的习惯是否不用默认工作目录。
+		2、选择archetype：相当于选择maven模板设置，这里使用webapp
+		3、groupid对应于包名，artifactid对应于项目名。
+		4、正常应该有src/main/resources和Java两个文件夹，如果缺少，到build path里面进行一下设置，进入source菜单，如果出现missing，将其remove，然后add folder添加一个src/main/java，注意output folder和resources文件夹保持一致。在这个文件夹里创建java文件编写。
+		5、缺少的jar库依赖，在pom文件中进行设置。将中央仓库中maven的dependency层级复制到pom文件的dependencies元素中即可。
+		6、将项目的静态文件(html/js)等WebContent内容放到maven项目的src/main/webapp目录下。
+		7、pom文件中run as maven install打包成war包，会放在target目录下
+			打包时用到的命令可能有package install deploy。
+			clean清理之前项目在target中产生的内容。
+
+		8、使用mvn命令进行打包时，可能出现编码不一致的情况，那么在pom文件中进行设置	
+		<properties>
+			<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		</properties>
+		9、如果碰到项目移植或者编写时出现一些奇怪的环境问题：	
+			eclipse的project菜单中的clean，maven clean，maven项目上右键 ->maven菜单->update project.
+	
+	2、TestNG的自动化测试项目：
+		1、archetype选择quickstart
+		2、排查异常：看problems，看哪个文件有红叉，点右边的红色方块定位，并且去查看报错信息。
+		引入需要的依赖，确定buildpath中的问题被解决。
+		3、编写testng.xml文件完成测试用例的指定
+		4、将执行testng.xml的过程交给pom文件来进行管理。需要在pom文件中加入surefire插件。
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<compilerArgs>
+						<arg>-Xlint:unchecked</arg>
+						<arg>-Xlint:deprecation </arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.1</version>
+				<configuration>
+					<suiteXmlFiles>
+						<file>testNG.xml</file>
+					</suiteXmlFiles>
+					<argLine>-Dfile.encoding=UTF-8</argLine>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+4、stackoverflow和github多去访问，碰到问题多搜StackOverflow。
+
+5、git客户端的安装完成之后，记得生成公私钥，用于完成和服务器之间的鉴权。
+
+	github上注册账号，并且完成公钥的配置。
+
+	下载git源码的过程建议使用bash命令行操作：
+		1、git init 
+		2、git clone
+	上传的过程建议使用gui进行操作：
+		1、stage changed，将所有变化的内容提交到暂存区，选中部分内容并且通过commit菜单中的stage to commit提交部分内容。
+		2、sign off签名，加描述
+		3、commit 确认
+		4、push 上传到服务器
